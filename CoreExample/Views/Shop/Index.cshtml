@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Category & Product </h3>
+<br />
+<button type="button" id="btnCategoryList" class="btn btn-info">Category List</button>
+<button type="button" id="btnProductList" class="btn btn-info">Product List</button>
+<button type="button" id="btnCategoryAdd" class="btn btn-info">Category Add</button>
+<button type="button" id="btnProductAdd" class="btn btn-info">Product Add</button>
+<br />
+<br />
+
+<div id="categorylist">
+</div>
+<div id="productlist">
+</div>
+<div>
+    <input type="text" class="form-control" id="txtcategoryname" placeholder="Kategori Adı Giriniz" />
+    <br />   
+</div>
+<br />
+<div>
+    <input type="text" class="form-control" id="txtproductname" placeholder="Ürün Adı Giriniz" />
+    <br />   
+</div>
+
+@section Scripts{
+<script>
+    $("#btnCategoryList").click(function(){
+        $.ajax({
+            contentType:"application/json",
+            dataType:"json",
+            type:"Get",
+            url:"/Shop/CategoryList/",
+            success:function (func){
+                let w = jQuery.parseJSON(func);
+                console.log(w);
+                let tablehtml="<table class=table table-bordered> <tr> <th>Category ID</th> <th>Category Name</th> </tr>";
+                $.each(w,(index, value)=>{
+                    tablehtml+=`<tr><td>${value.Id}</td> <td>${value.CategoryName}</td></tr>`
+                });
+                tablehtml +="</table>";
+                $("#categorylist").html(tablehtml);
+            }
+        })
+    })
+     $("#btnProductList").click(function(){
+        $.ajax({
+            contentType:"application/json",
+            dataType:"json",
+            type:"Get",
+            url:"/Shop/ProductList/",
+            success:function (func){
+                let w = jQuery.parseJSON(func);
+                console.log(w);
+                let tablehtml="<table class=table table-bordered> <tr> <th>Product ID</th> <th>Product Name</th> </tr>";
+                $.each(w,(index, value)=>{
+                    tablehtml+=`<tr><td>${value.Id}</td> <td>${value.ProductName}</td></tr>`
+                });
+                tablehtml +="</table>";
+                $("#productlist").html(tablehtml);
+            }
+        })
+    })
+     $("#btnCategoryAdd").click(function(){
+        let w ={           
+            CategoryName: $("#txtcategoryname").val()
+        };
+        $.ajax({
+            type:"post",
+            url:"/Shop/CategoryAdd/",
+            data: w,
+            success:function(func){
+                let result=jQuery.parseJSON(func);
+                alert("Kategori Ekleme İşlemi Başarılı");
+
+            }
+        });
+    });
+    $("#btnProductAdd").click(function(){
+        let w ={
+            CategoryName: $("#txtproductname").val()
+        };
+        $.ajax({
+            type:"post",
+            url:"/Shop/ProductAdd/",
+            data: w,
+            success:function(func){
+                let result=jQuery.parseJSON(func);
+                alert("Ürün Ekleme İşlemi Başarılı");
+
+            }
+        });
+    });
+</script>
+}
